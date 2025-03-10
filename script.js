@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize EmailJS with your Public Key (replace with your actual key)
-    emailjs.init('YOUR_PUBLIC_KEY'); // Get this from EmailJS dashboard
+    // Initialize EmailJS with your Public Key
+    // Replace 'YOUR_PUBLIC_KEY' with the actual Public Key from your EmailJS dashboard
+    emailjs.init('YOUR_PUBLIC_KEY');
 
     // Hamburger Menu
     const hamburger = document.querySelector('.nav-hamburger');
@@ -105,20 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const formData = {
-            name: contactForm.querySelector('[name="name"]').value,
-            email: contactForm.querySelector('[name="email"]').value,
-            subject: contactForm.querySelector('[name="subject"]').value,
-            message: contactForm.querySelector('[name="message"]').value
-        };
+        // Validate form fields
+        const name = contactForm.querySelector('[name="name"]').value.trim();
+        const email = contactForm.querySelector('[name="email"]').value.trim();
+        const subject = contactForm.querySelector('[name="subject"]').value.trim();
+        const message = contactForm.querySelector('[name="message"]').value.trim();
 
+        if (!name || !email || !subject || !message) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        const formData = { name, email, subject, message };
+
+        // Log form data for debugging
+        console.log('Sending form data:', formData);
+
+        // Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with actual values
         emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
-            .then(() => {
+            .then((response) => {
+                console.log('Email sent successfully:', response.status, response.text);
                 alert('Message sent successfully!');
                 contactForm.reset();
             }, (error) => {
-                console.error('Error:', error);
-                alert('Failed to send message. Please try again.');
+                console.error('Failed to send email:', error);
+                alert('Failed to send message. Check the console for details or try again later.');
             });
     });
 
