@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bijay Kurmi | Backend Specialist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Source+Code+Pro:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -70,11 +70,11 @@
             <h2 class="section-title">Contact</h2>
             <div class="contact-grid">
                 <div class="contact-info"></div>
-                <form class="contact-form">
-                    <input type="text" placeholder="Name" class="input-field" required>
-                    <input type="email" placeholder="Email" class="input-field" required>
-                    <input type="text" placeholder="Subject" class="input-field" required>
-                    <textarea placeholder="Message" class="input-field" required></textarea>
+                <form id="contactForm" class="contact-form">
+                    <input type="text" name="name" placeholder="Name" class="input-field" required>
+                    <input type="email" name="email" placeholder="Email" class="input-field" required>
+                    <input type="text" name="subject" placeholder="Subject" class="input-field" required>
+                    <textarea name="message" placeholder="Message" class="input-field" required></textarea>
                     <button type="submit" class="cta-btn">Submit</button>
                 </form>
             </div>
@@ -89,6 +89,8 @@
         </div>
     </footer>
 
+    <!-- EmailJS Script -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

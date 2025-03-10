@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize EmailJS with your Public Key (replace with your actual key)
+    emailjs.init('YOUR_PUBLIC_KEY'); // Get this from EmailJS dashboard
+
     // Hamburger Menu
     const hamburger = document.querySelector('.nav-hamburger');
     const menu = document.querySelector('.nav-menu');
@@ -21,12 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dynamic Content
     const skills = [
-        { icon: 'fas fa-code', title: 'C', desc: 'High-performance system coding.' },
-        { icon: 'fas fa-file-code', title: 'C++', desc: 'Advanced OOP applications.' },
-        { icon: 'fab fa-python', title: 'Python', desc: 'Scalable backend solutions.' },
-        { icon: 'fas fa-database', title: 'MySQL', desc: 'Optimized data handling.' },
-        { icon: 'fab fa-git-alt', title: 'Git', desc: 'Version control expertise.' },
-        { icon: 'fas fa-microchip', title: 'Electronics', desc: 'Circuit design skills.' }
+        { icon: 'fas fa-code', title: 'C', desc: 'High-performance system coding.', level: 90 },
+        { icon: 'fas fa-file-code', title: 'C++', desc: 'Advanced OOP applications.', level: 85 },
+        { icon: 'fab fa-python', title: 'Python', desc: 'Scalable backend solutions.', level: 80 },
+        { icon: 'fas fa-database', title: 'MySQL', desc: 'Optimized data handling.', level: 75 },
+        { icon: 'fab fa-git-alt', title: 'Git', desc: 'Version control expertise.', level: 70 },
+        { icon: 'fas fa-microchip', title: 'Electronics', desc: 'Circuit design skills.', level: 65 }
     ];
 
     const projects = [
@@ -50,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { icon: 'fab fa-linkedin-in', link: 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit' }
     ];
 
-    // Populate Skills
+    // Populate Skills with Progress Bars
     const skillsContainer = document.querySelector('.skills-container');
     skills.forEach(skill => {
         skillsContainer.innerHTML += `
@@ -58,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="${skill.icon}"></i>
                 <h3>${skill.title}</h3>
                 <p>${skill.desc}</p>
+                <div class="progress"><div class="progress-bar" style="width: ${skill.level}%"></div></div>
             </div>
         `;
     });
@@ -96,30 +100,30 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     });
 
-    // Dynamic Touch and Particle Effects
-    const body = document.body;
+    // Contact Form Submission with EmailJS
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-    // Touch Effect
-    body.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        createRipple(touch.clientX, touch.clientY);
+        const formData = {
+            name: contactForm.querySelector('[name="name"]').value,
+            email: contactForm.querySelector('[name="email"]').value,
+            subject: contactForm.querySelector('[name="subject"]').value,
+            message: contactForm.querySelector('[name="message"]').value
+        };
+
+        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
+            .then(() => {
+                alert('Message sent successfully!');
+                contactForm.reset();
+            }, (error) => {
+                console.error('Error:', error);
+                alert('Failed to send message. Please try again.');
+            });
     });
 
-    body.addEventListener('click', (e) => {
-        createRipple(e.clientX, e.clientY);
-    });
-
-    function createRipple(x, y) {
-        const ripple = document.createElement('div');
-        ripple.classList.add('background-ripple');
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        body.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 1400); // Match animation duration
-    }
-
-    // Particle Animation
-    const particleCount = 30;
+    // Dynamic Background Particles
+    const particleCount = 20;
     for (let i = 0; i < particleCount; i++) {
         createParticle();
     }
@@ -128,23 +132,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const particle = document.createElement('div');
         particle.classList.add('particle');
         particle.style.left = `${Math.random() * 100}vw`;
-        particle.style.top = `${Math.random() * 100}vh`;
-        particle.style.animation = `floatParticle ${Math.random() * 8 + 4}s infinite ease-in-out`;
-        body.appendChild(particle);
+        particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
+        document.body.appendChild(particle);
         setTimeout(() => {
             particle.remove();
             createParticle(); // Respawn particle
-        }, (Math.random() * 8 + 4) * 1000);
+        }, (Math.random() * 5 + 5) * 1000);
     }
 
-    // Define Particle Animation
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-        @keyframes floatParticle {
-            0% { transform: translateY(0) translateX(0); opacity: 0.6; }
-            50% { transform: translateY(${Math.random() * -20 - 10}vh) translateX(${Math.random() * 20 - 10}vw); opacity: 0.3; }
-            100% { transform: translateY(${Math.random() * -40 - 20}vh) translateX(${Math.random() * 20 - 10}vw); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(styleSheet);
+    // Glow Trail Effect
+    document.addEventListener('mousemove', (e) => {
+        createGlowTrail(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        createGlowTrail(touch.clientX, touch.clientY);
+    });
+
+    function createGlowTrail(x, y) {
+        const glow = document.createElement('div');
+        glow.classList.add('glow-trail');
+        glow.style.left = `${x}px`;
+        glow.style.top = `${y}px`;
+        document.body.appendChild(glow);
+        setTimeout(() => glow.remove(), 800); // Match fadeOut animation duration
+    }
 });
