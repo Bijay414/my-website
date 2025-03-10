@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize EmailJS with your Public Key
-    emailjs.init("4TJOdLXZP4lGSrj_h");
+    // Initialize EmailJS with your Public Key - Make sure this key is allowed on your domain
+    (function() {
+        // Initialize the EmailJS SDK with your public key
+        emailjs.init("4TJOdLXZP4lGSrj_h");
+    })();
     
     // EmailJS configuration
-    const serviceID = "service_ovgas19";  // e.g., 'gmail' or service name you created
-    const templateID = "template_bmsgu4h"; // e.g., 'template_abc123'
+    const serviceID = "service_ovgas19";
+    const templateID = "template_bmsgu4h";
 
     // Hamburger Menu
     const hamburger = document.querySelector('.nav-hamburger');
@@ -167,6 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // IMPROVED: Contact Form Submission with EmailJS
     const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('form-status');
+    
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -177,8 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         // Clear previous messages
-        const prevMessages = contactForm.querySelectorAll('.message');
-        prevMessages.forEach(msg => msg.remove());
+        formStatus.innerHTML = '';
+        formStatus.className = '';
 
         // Validate form fields
         const name = contactForm.querySelector('[name="name"]').value.trim();
@@ -211,18 +216,34 @@ document.addEventListener('DOMContentLoaded', () => {
             to_email: 'kurmibijay4484@gmail.com'  // Add recipient email to template
         };
 
-        // Send email using EmailJS
+        // Debug message
+        console.log("Attempting to send email with EmailJS...");
+        console.log("Service ID:", serviceID);
+        console.log("Template ID:", templateID);
+
+        // Send email using EmailJS with improved error handling
         emailjs.send(serviceID, templateID, templateParams)
             .then((response) => {
-                console.log('Success:', response.status, response.text);
+                console.log('EmailJS Success:', response.status, response.text);
                 showFormMessage('Message sent successfully! Thank you for contacting me.', 'success');
                 contactForm.reset();
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
             })
             .catch((error) => {
-                console.error('Error:', error);
-                showFormMessage('Failed to send message. Please try again or contact directly at kurmibijay4484@gmail.com', 'error');
+                console.error('EmailJS Error:', error);
+                // More detailed error message
+                if (error.status === 0) {
+                    showFormMessage('Network error. Please check your internet connection and try again.', 'error');
+                } else if (error.status === 403) {
+                    showFormMessage('Authorization error. This domain may not be authorized to use EmailJS.', 'error');
+                } else if (error.status >= 400 && error.status < 500) {
+                    showFormMessage(`Request error (${error.status}): ${error.text || 'Please check your form data and try again.'}`, 'error');
+                } else if (error.status >= 500) {
+                    showFormMessage('Server error. Please try again later or contact directly at kurmibijay4484@gmail.com', 'error');
+                } else {
+                    showFormMessage('Failed to send message. Please try again or contact directly at kurmibijay4484@gmail.com', 'error');
+                }
+            })
+            .finally(() => {
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
             });
@@ -230,16 +251,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper function to show form messages
     function showFormMessage(text, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}-message`;
-        messageDiv.innerHTML = `<i class="${type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'}"></i> ${text}`;
-        contactForm.appendChild(messageDiv);
+        formStatus.className = `message ${type}-message`;
+        formStatus.innerHTML = `<i class="${type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'}"></i> ${text}`;
         
-        // Remove message after delay (except for errors)
+        // Remove success message after delay
         if (type === 'success') {
             setTimeout(() => {
-                messageDiv.classList.add('fade-out');
-                setTimeout(() => messageDiv.remove(), 500);
+                formStatus.classList.add('fade-out');
+                setTimeout(() => {
+                    formStatus.innerHTML = '';
+                    formStatus.className = '';
+                }, 500);
             }, 5000);
         }
     }
