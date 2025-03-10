@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { icon: 'fab fa-facebook-f', link: 'https://www.facebook.com/share/1A3g' },
         { icon: 'fab fa-github', link: 'https://github.com/Bijay414' },
         { icon: 'fab fa-instagram', link: 'https://www.instagram.com/bijaykurmi20/profilecard/?igsh=eDUxaXk1ZmptMHR5' },
-        { icon: 'fab fa-linkedin-in', link: 'https://www.linkedin.com/in/bijay-kurmi' }
+        { icon: 'fab fa-linkedin-in', link: 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit' }
     ];
 
     // Populate Skills
